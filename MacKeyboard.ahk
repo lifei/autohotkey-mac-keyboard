@@ -21,26 +21,17 @@ SendMode Input
 ; Programs which use Widnows key map
 ; --------------------------------------------------------------
 
-KeepWindowsKeyMap()
-{
-	return WinActive("ahk_class mintty")
+KeepWindowsKeyMap() {
+	return WinActive("ahk_class mintty") or WinActive("ahk_class Vim") or WinActive("ahk_class PuTTY") or WinActive("ahk_class VanDyke Software - SecureCRT")
 }
 
 ; --------------------------------------------------------------
 ; OS X system shortcuts
 ; --------------------------------------------------------------
 
-; Make Ctrl + S work with cmd (windows) key
-<#s::Send ^s
-
-; Selecting
-<#a::Send ^a
-
 ; Copying
-Copy()
-{
-	If KeepWindowsKeyMap()
-	{
+Copy() {
+	If KeepWindowsKeyMap() {
 		Send ^{Insert}
 	} else {
 		Send ^c
@@ -49,10 +40,8 @@ Copy()
 <#c::Copy()
 
 ; Pasting
-Paste()
-{
-	If KeepWindowsKeyMap()
-	{
+Paste() {
+	If KeepWindowsKeyMap() {
 		Send +{Insert}
 	} else {
 		Send ^v
@@ -60,44 +49,53 @@ Paste()
 }
 <#v::Paste()
 
-; Cutting
-<#x::Send ^x
 
-; Opening
-<#o::Send ^o
-
-; Finding
-<#f::Send ^f
-
-; Undo
-<#z::Send ^z
-
-; Redo
-<#y::Send ^y
-
-; New tab
-<#t::Send ^t
-
-; close tab
-<#w::Send ^w
-
-; Refresh
-<#r::Send ^r
+<#s::^s
+<#a::^a
+<#x::^x
+<#o::^o
+<#f::^f
+<#z::^z
+<#y::^y
+<#t::^t
+<#w::^w
+<#r::^r
 
 
 ; shortcut for Tabs
-<#1::Send ^1
-<#2::Send ^2
-<#3::Send ^3
-<#4::Send ^4
-<#5::Send ^5
-<#6::Send ^6
-<#7::Send ^7
-<#8::Send ^8
-<#9::Send ^9
+IsSecureCRT() {
+	return WinActive("ahk_class VanDyke Software - SecureCRT")
+}
+
+WindowsNumber(num)
+{
+	If IsSecureCRT()
+	{
+		Send {Alt Down}
+		Send {Alt Up}
+		Send !%num%
+	}
+	else
+	{
+		Send ^%num%
+	}
+}
+<#1::WindowsNumber(1)
+<#2::WindowsNumber(2)
+<#3::WindowsNumber(3)
+<#4::WindowsNumber(4)
+<#5::WindowsNumber(5)
+<#6::WindowsNumber(6)
+<#7::WindowsNumber(7)
+<#8::WindowsNumber(8)
+<#9::WindowsNumber(9)
 
 ; Close windows (cmd + q to Alt + F4)
 <#q::Send !{F4}
+
+
+#LButton::Send ^{LButton}
+#RButton::Send ^{RButton}
 
 ; Remap Windows + Tab to Alt + Tab.
 Lwin & Tab::AltTab
@@ -118,8 +116,25 @@ CtrlA() {
 <^e::Send {End}
 
 ; Emacs¼üÎ»
-^b::Send {Left}
-^f::Send {Right}
+CtrlB() {
+	If KeepWindowsKeyMap()
+	{
+		Send ^b
+	} else {
+		Send {Left}
+	}
+}
+<^b::CtrlB()
+
+CtrlF() {
+	If KeepWindowsKeyMap()
+	{
+		Send ^f
+	} else {
+		Send {Right}
+	}
+}
+<^f::CtrlF()
 
 AltB()
 {
