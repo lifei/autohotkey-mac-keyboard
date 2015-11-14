@@ -50,7 +50,10 @@ Paste() {
 <#v::Paste()
 
 
+; Save
 <#s::^s
+
+; Select All
 <#a::^a
 <#x::^x
 <#o::^o
@@ -58,8 +61,17 @@ Paste() {
 <#z::^z
 <#y::^y
 <#t::^t
-<#w::^w
 <#r::^r
+
+; Close Tab
+CloseTab() {
+	If WinActive("ahk_class VanDyke Software - SecureCRT") {
+		Send ^{F4}
+	} else {
+		Send ^w
+	}
+}
+<#w::CloseTab()
 
 
 ; shortcut for Tabs
