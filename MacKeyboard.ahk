@@ -54,14 +54,15 @@ Paste() {
 <#s::^s
 
 ; Select All
-<#a::^a
-<#x::^x
-<#o::^o
-<#f::^f
-<#z::^z
-<#y::^y
-<#t::^t
-<#r::^r
+#a::Send ^a
+#x::Send ^x
+#o::Send ^o
+#f::Send ^f
+#z::Send ^z
+#y::Send ^y
+#t::Send ^t
+#r::Send ^r
+#h::Send ^h
 
 ; Close Tab
 CloseTab() {
@@ -110,7 +111,8 @@ WindowsNumber(num)
 #RButton::Send ^{RButton}
 
 ; Remap Windows + Tab to Alt + Tab.
-Lwin & Tab::AltTab
+<#tab::AltTab
+<#CapsLock::ShiftAltTab
 
 ; minimize windows
 #m::WinMinimize,a
