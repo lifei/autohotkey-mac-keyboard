@@ -21,68 +21,139 @@ SendMode Input
 ; Programs which use Widnows key map
 ; --------------------------------------------------------------
 
-KeepWindowsKeyMap() {
+InTerminal() {
 	return WinActive("ahk_class mintty") or WinActive("ahk_class Vim") or WinActive("ahk_class PuTTY") or WinActive("ahk_class VanDyke Software - SecureCRT")
+}
+
+InJetbrainIDE() {
+	return WinActive("ahk_class SunAwtFrame")
+}
+
+InSecureCRT() {
+	return WinActive("ahk_class VanDyke Software - SecureCRT")
 }
 
 ; --------------------------------------------------------------
 ; OS X system shortcuts
 ; --------------------------------------------------------------
 
-; Copying
-Copy() {
-	If KeepWindowsKeyMap() {
+; Windows + C
+WinC() {
+	If InTerminal() or InJetbrainIDE() {
 		Send ^{Insert}
 	} else {
 		Send ^c
 	}
 }
-<#c::Copy()
+<#c::WinC()
 
-; Pasting
-Paste() {
-	If KeepWindowsKeyMap() {
+; Windows + V
+WinV() {
+	If InTerminal() or InJetbrainIDE() {
 		Send +{Insert}
 	} else {
 		Send ^v
 	}
 }
-<#v::Paste()
+<#v::WinV()
 
-
-; Save
-<#s::^s
-
-; Select All
-#a::Send ^a
-#x::Send ^x
-#o::Send ^o
-#f::Send ^f
-#z::Send ^z
-#y::Send ^y
-#t::Send ^t
-#r::Send ^r
-#h::Send ^h
-
-; Close Tab
-CloseTab() {
-	If WinActive("ahk_class VanDyke Software - SecureCRT") {
+; Windows + W
+WinW() {
+	If InSecureCRT() {
 		Send ^{F4}
 	} else {
 		Send ^w
 	}
 }
-<#w::CloseTab()
+<#w::WinW()
 
+; Save
+<#s::^s
 
-; shortcut for Tabs
-IsSecureCRT() {
-	return WinActive("ahk_class VanDyke Software - SecureCRT")
+; Cut
+#x::Send ^x
+#z::Send ^z
+#y::Send ^y
+#t::Send ^t
+#h::Send ^h
+
+; Windows + G
+WinG() {
+	If InJetbrainIDE() {
+		Send +^!g
+	} else {
+		Send #f
+	}
 }
+^#g::WinG()
 
-WindowsNumber(num)
+; Windows + F
+WinF() {
+	If InJetbrainIDE() {
+		Send +^!f
+	} else {
+		Send ^f
+	}
+}
+<#f::WinF()
+
+; Windows + H
+WinH() {
+	If InJetbrainIDE() {
+		Send +^!h
+	} else {
+		Send ^h
+	}
+}
+<#h::WinH()
+
+
+; Windows + A
+WinA() {
+	If InJetbrainIDE() {
+		Send +^!a
+	} else {
+		Send ^a
+	}
+}
+#a::WinA()
+
+; Windows + O
+WinO() {
+	If InJetbrainIDE() {
+		Send +^!o
+	} else {
+		Send ^o
+	}
+}
+#o::WinO()
+
+; Windows + R
+WinR() {
+	If InJetbrainIDE() {
+		Send +^!r
+	} else {
+		Send ^r
+	}
+}
+#r::WinR()
+
+; Windows + /
+WinSlash() {
+	If InJetbrainIDE() {
+		Send +^!/
+	} else {
+		Send ^/
+	}
+}
+#/::WinSlash()
+
+
+; Windows + Numbers
+
+CallWinNum(num)
 {
-	If IsSecureCRT()
+	If InSecureCRT()
 	{
 		Send {Alt Down}
 		Send {Alt Up}
@@ -93,15 +164,23 @@ WindowsNumber(num)
 		Send ^%num%
 	}
 }
-<#1::WindowsNumber(1)
-<#2::WindowsNumber(2)
-<#3::WindowsNumber(3)
-<#4::WindowsNumber(4)
-<#5::WindowsNumber(5)
-<#6::WindowsNumber(6)
-<#7::WindowsNumber(7)
-<#8::WindowsNumber(8)
-<#9::WindowsNumber(9)
+
+Win1() {
+	If InJetbrainIDE() {
+		Send +^!1
+    } else {
+		CallWinNum(1)
+	}
+}
+<#1::Win1()
+<#2::CallWinNum(2)
+<#3::CallWinNum(3)
+<#4::CallWinNum(4)
+<#5::CallWinNum(5)
+<#6::CallWinNum(6)
+<#7::CallWinNum(7)
+<#8::CallWinNum(8)
+<#9::CallWinNum(9)
 
 ; Close windows (cmd + q to Alt + F4)
 <#q::Send !{F4}
@@ -119,7 +198,7 @@ WindowsNumber(num)
 
 ; *nux的Home/End
 CtrlA() {
-	If KeepWindowsKeyMap()
+	If InTerminal()
 	{
 		Send ^a
 	} else {
@@ -131,7 +210,7 @@ CtrlA() {
 
 ; Emacs键位
 CtrlB() {
-	If KeepWindowsKeyMap()
+	If InTerminal()
 	{
 		Send ^b
 	} else {
@@ -141,7 +220,7 @@ CtrlB() {
 <^b::CtrlB()
 
 CtrlF() {
-	If KeepWindowsKeyMap()
+	If InTerminal() or InJetbrainIDE()
 	{
 		Send ^f
 	} else {
@@ -152,7 +231,7 @@ CtrlF() {
 
 AltB()
 {
-	If KeepWindowsKeyMap()
+	If InTerminal()
 	{
 		Send !b
 	} else {
@@ -163,7 +242,7 @@ AltB()
 
 AltF()
 {
-	If KeepWindowsKeyMap()
+	If InTerminal()
 	{
 		Send !f
 	} else {
@@ -174,7 +253,7 @@ AltF()
 
 AltBackspace()
 {
-	If KeepWindowsKeyMap()
+	If InTerminal()
 	{
 		Send !{Backspace}
 	} else {
@@ -197,7 +276,7 @@ AltBackspace()
 ; 显示桌面
 AltD()
 {
-	If KeepWindowsKeyMap()
+	If InTerminal()
 	{
 		Send !d
 	} else {
