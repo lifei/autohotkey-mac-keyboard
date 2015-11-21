@@ -74,8 +74,17 @@ WinW() {
 #x::Send ^x
 #z::Send ^z
 #y::Send ^y
-#t::Send ^t
-#h::Send ^h
+
+
+; Windows + T
+WinT() {
+	If InJetbrainIDE() {
+		Send +^!t
+	} else {
+		Send #t
+	}
+}
+<#t::WinT()
 
 ; Windows + G
 WinG() {
