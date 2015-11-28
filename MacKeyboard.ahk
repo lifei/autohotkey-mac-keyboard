@@ -16,17 +16,26 @@
 #SingleInstance force
 SetTitleMatchMode 2
 SendMode Input
+#UseHook On
 
 ; --------------------------------------------------------------
 ; Programs which use Widnows key map
 ; --------------------------------------------------------------
 
+GroupAdd, Terminal, ahk_class mintty
+GroupAdd, Terminal, ahk_class Vim
+GroupAdd, Terminal, ahk_class PuTTY
+GroupAdd, Terminal, ahk_class VanDyke Software - SecureCRT
+
+GroupAdd, Jetbrains, ahk_class SunAwtDialog
+GroupAdd, Jetbrains, ahk_class SunAwtFrame
+
 InTerminal() {
-	return WinActive("ahk_class mintty") or WinActive("ahk_class Vim") or WinActive("ahk_class PuTTY") or WinActive("ahk_class VanDyke Software - SecureCRT")
+	return WinActive("ahk_group Terminal")
 }
 
-InJetbrainIDE() {
-	return WinActive("ahk_class SunAwtFrame")
+InJetbrainsIDE() {
+	return WinActive("ahk_group Jetbrains")
 }
 
 InSecureCRT() {
@@ -37,10 +46,15 @@ InSecureCRT() {
 ; OS X system shortcuts
 ; --------------------------------------------------------------
 
+LWin::
+RWin::
+Return
+#Up::Send {LWin}
+
 ; Windows + C
 WinC() {
-	If InTerminal() or InJetbrainIDE() {
-		Send ^{Insert}
+	If InTerminal() or InJetbrainsIDE() {
+		Send ^{Ins}
 	} else {
 		Send ^c
 	}
@@ -49,8 +63,8 @@ WinC() {
 
 ; Windows + V
 WinV() {
-	If InTerminal() or InJetbrainIDE() {
-		Send +{Insert}
+	If InTerminal() || InJetbrainsIDE() {
+		Send +{Ins}
 	} else {
 		Send ^v
 	}
@@ -74,11 +88,11 @@ WinW() {
 #x::Send ^x
 #z::Send ^z
 #y::Send ^y
-
+#n::Send ^n
 
 ; Windows + T
 WinT() {
-	If InJetbrainIDE() {
+	If InJetbrainsIDE() {
 		Send +^!t
 	} else {
 		Send #t
@@ -88,17 +102,17 @@ WinT() {
 
 ; Windows + G
 WinG() {
-	If InJetbrainIDE() {
+	If InJetbrainsIDE() {
 		Send +^!g
 	} else {
-		Send #f
+		Send #g
 	}
 }
-^#g::WinG()
+<#g::WinG()
 
 ; Windows + F
 WinF() {
-	If InJetbrainIDE() {
+	If InJetbrainsIDE() {
 		Send +^!f
 	} else {
 		Send ^f
@@ -108,7 +122,7 @@ WinF() {
 
 ; Windows + H
 WinH() {
-	If InJetbrainIDE() {
+	If InJetbrainsIDE() {
 		Send +^!h
 	} else {
 		Send ^h
@@ -119,7 +133,7 @@ WinH() {
 
 ; Windows + A
 WinA() {
-	If InJetbrainIDE() {
+	If InJetbrainsIDE() {
 		Send +^!a
 	} else {
 		Send ^a
@@ -129,7 +143,7 @@ WinA() {
 
 ; Windows + O
 WinO() {
-	If InJetbrainIDE() {
+	If InJetbrainsIDE() {
 		Send +^!o
 	} else {
 		Send ^o
@@ -139,7 +153,7 @@ WinO() {
 
 ; Windows + R
 WinR() {
-	If InJetbrainIDE() {
+	If InJetbrainsIDE() {
 		Send +^!r
 	} else {
 		Send ^r
@@ -149,7 +163,7 @@ WinR() {
 
 ; Windows + /
 WinSlash() {
-	If InJetbrainIDE() {
+	If InJetbrainsIDE() {
 		Send +^!/
 	} else {
 		Send ^/
@@ -175,7 +189,7 @@ CallWinNum(num)
 }
 
 Win1() {
-	If InJetbrainIDE() {
+	If InJetbrainsIDE() {
 		Send +^!1
     } else {
 		CallWinNum(1)
@@ -205,7 +219,7 @@ Win1() {
 ; minimize windows
 #m::WinMinimize,a
 
-; *nuxµÄHome/End
+; *nux Home/End
 CtrlA() {
 	If InTerminal()
 	{
@@ -217,7 +231,7 @@ CtrlA() {
 <^a::CtrlA()
 <^e::Send {End}
 
-; Emacs¼üÎ»
+; Emacsé”®ä½
 CtrlB() {
 	If InTerminal()
 	{
@@ -229,7 +243,7 @@ CtrlB() {
 <^b::CtrlB()
 
 CtrlF() {
-	If InTerminal() or InJetbrainIDE()
+	If InTerminal() or InJetbrainsIDE()
 	{
 		Send ^f
 	} else {
@@ -237,6 +251,26 @@ CtrlF() {
 	}
 }
 <^f::CtrlF()
+
+CtrlN() {
+	If InTerminal() or InJetbrainsIDE()
+	{
+		Send ^n
+	} else {
+		Send {Down}
+	}
+}
+<^n::CtrlN()
+
+CtrlP() {
+	If InTerminal() or InJetbrainsIDE()
+	{
+		Send ^p
+	} else {
+		Send {Up}
+	}
+}
+<^p::CtrlP()
 
 AltB()
 {
@@ -276,13 +310,13 @@ AltBackspace()
 
 
 ; =======================
-; Windows³£ÓÃ¹¤¾ß
+; Windows Search
 
-; ËÑË÷¹¦ÄÜ
-!s::Send #s
-^Space::Send #s
+; For Windows 10 Bug, use old search instead of {Win}s
+!s::Run, %windir%\system32\rundll32.exe -sta {C90FB8CA-3295-4462-A721-2935E83694BA}
+^Space::Run, %windir%\system32\rundll32.exe -sta {C90FB8CA-3295-4462-A721-2935E83694BA}
 
-; ÏÔÊ¾×ÀÃæ
+; æ˜¾ç¤ºæ¡Œé¢
 AltD()
 {
 	If InTerminal()
@@ -294,13 +328,13 @@ AltD()
 }
 <!d::AltD()
 
-; ÔËÐÐ
+; è¿è¡Œ
 !r::Send #r
 
-; ×ÊÔ´¹ÜÀíÆ÷
+; èµ„æºç®¡ç†å™¨
 !e::Send #e
 
-; ËøÆÁ
+; é”å±
 !l::Send #l
 
 
@@ -316,7 +350,7 @@ AltD()
 ; QQ
 #IfWinExist, ahk_class TXGuiFoundation
 {
-; QQ½ØÍ¼
+; QQçƒ­é”®
 ^#a::Send ^!a
 +#a::Send ^!a
 }
