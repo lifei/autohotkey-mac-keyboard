@@ -26,6 +26,7 @@ GroupAdd, Terminal, ahk_class mintty
 GroupAdd, Terminal, ahk_class Vim
 GroupAdd, Terminal, ahk_class PuTTY
 GroupAdd, Terminal, ahk_class VanDyke Software - SecureCRT
+GroupAdd, Terminal, ahk_class VirtualConsoleClass
 
 GroupAdd, Jetbrains, ahk_class SunAwtDialog
 GroupAdd, Jetbrains, ahk_class SunAwtFrame
@@ -75,6 +76,8 @@ WinV() {
 WinW() {
 	If InSecureCRT() {
 		Send ^{F4}
+	} else if InJetbrainsIDE() {
+		Send +^!w
 	} else {
 		Send ^w
 	}
@@ -82,13 +85,21 @@ WinW() {
 <#w::WinW()
 
 ; Save
-<#s::^s
+WinS() {
+	If InJetbrainsIDE() {
+		Send +^!s
+	} else {
+		Send ^s
+	}
+}
+<#s::WinS()
 
 ; Cut
 #x::Send ^x
 #z::Send ^z
 #y::Send ^y
 #n::Send ^n
+#k::Send ^k
 
 ; Windows + T
 WinT() {
@@ -313,8 +324,10 @@ AltBackspace()
 ; Windows Search
 
 ; For Windows 10 Bug, use old search instead of {Win}s
+;!s::Run, %windir%\system32\rundll32.exe -sta {C90FB8CA-3295-4462-A721-2935E83694BA}
 !s::Run, %windir%\system32\rundll32.exe -sta {C90FB8CA-3295-4462-A721-2935E83694BA}
-^Space::Run, %windir%\system32\rundll32.exe -sta {C90FB8CA-3295-4462-A721-2935E83694BA}
+^Space::Send #s
+;^Space::Send #s
 
 ; 显示桌面
 AltD()
@@ -337,23 +350,7 @@ AltD()
 ; 锁屏
 !l::Send #l
 
-
-; Google Chrome
-#IfWinActive, ahk_class Chrome_WidgetWin_1
-{
-; Show Web Developer Tools with cmd + alt + i
-#!i::Send {F12}
-; Show source code with cmd + alt + u
-#!u::Send ^u
-}
-
 ; QQ
-#IfWinExist, ahk_class TXGuiFoundation
-{
-; QQ热键
 ^#a::Send ^!a
-+#a::Send ^!a
-}
-
 
 ; vim600: st=4 ts=4 sw=4
