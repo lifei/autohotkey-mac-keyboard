@@ -27,6 +27,11 @@ GroupAdd, Terminal, ahk_class Vim
 GroupAdd, Terminal, ahk_class PuTTY
 GroupAdd, Terminal, ahk_class VanDyke Software - SecureCRT
 GroupAdd, Terminal, ahk_class VirtualConsoleClass
+GroupAdd, Terminal, ahk_class TMobaXtermForm
+;GroupAdd, Terminal, — Atom ahk_class Chrome_WidgetWin_1
+
+GroupAdd, VSCode, - Visual Studio Code
+
 
 GroupAdd, Jetbrains, ahk_class SunAwtDialog
 GroupAdd, Jetbrains, ahk_class SunAwtFrame
@@ -37,6 +42,10 @@ InTerminal() {
 
 InJetbrainsIDE() {
 	return WinActive("ahk_group Jetbrains")
+}
+
+InVSCode() {
+	return WinActive("ahk_group VSCode")
 }
 
 InSecureCRT() {
@@ -51,10 +60,12 @@ LWin::
 RWin::
 Return
 #Up::Send {LWin}
+#ESC::`
++ESC::~
 
 ; Windows + C
 WinC() {
-	If InTerminal() or InJetbrainsIDE() {
+	If InTerminal() or InJetbrainsIDE() or InVSCode() {
 		Send ^{Ins}
 	} else {
 		Send ^c
@@ -64,7 +75,7 @@ WinC() {
 
 ; Windows + V
 WinV() {
-	If InTerminal() || InJetbrainsIDE() {
+	If InTerminal() or InJetbrainsIDE() or InVSCode() {
 		Send +{Ins}
 	} else {
 		Send ^v
@@ -74,7 +85,7 @@ WinV() {
 
 ; Windows + W
 WinW() {
-	If InSecureCRT() {
+	If InSecureCRT() or InVSCode() {
 		Send ^{F4}
 	} else if InJetbrainsIDE() {
 		Send +^!w
@@ -184,7 +195,6 @@ WinSlash() {
 
 
 ; Windows + Numbers
-
 CallWinNum(num)
 {
 	If InSecureCRT()
@@ -242,9 +252,19 @@ CtrlA() {
 <^a::CtrlA()
 <^e::Send {End}
 
+CtrlD() {
+	If InTerminal() or InJetbrainsIDE() or InVSCode()
+	{
+		Send ^d
+	} else {
+		Send {Delete}
+	}
+}
+<^d::CtrlD()
+
 ; Emacs键位
 CtrlB() {
-	If InTerminal()
+	If InTerminal() or InJetbrainsIDE() or InVSCode()
 	{
 		Send ^b
 	} else {
@@ -328,18 +348,6 @@ AltBackspace()
 !s::Run, %windir%\system32\rundll32.exe -sta {C90FB8CA-3295-4462-A721-2935E83694BA}
 ^Space::Send #s
 ;^Space::Send #s
-
-; 显示桌面
-AltD()
-{
-	If InTerminal()
-	{
-		Send !d
-	} else {
-		Send #d
-	}
-}
-<!d::AltD()
 
 ; 运行
 !r::Send #r
