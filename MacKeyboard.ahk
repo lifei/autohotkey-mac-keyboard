@@ -183,6 +183,36 @@ WinR() {
 }
 #r::WinR()
 
+
+; Windows + Right
+WinRight() {
+	Send {End}
+}
+<#Right::WinRight()
+
+
+; Windows + Left
+WinLeft() {
+	Send {Home}
+}
+<#Left::WinLeft()
+
+
+; Windows + Left + Shift
+WinLeftShift() {
+	Send +{Home}
+}
+<#+Left::WinLeftShift()
+
+
+
+; Windows + Right + Shift
+WinRightShift() {
+	Send +{End}
+}
+<#+Right::WinRightShift()
+
+
 ; Windows + /
 WinSlash() {
 	If InJetbrainsIDE() {
